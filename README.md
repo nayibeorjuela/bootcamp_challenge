@@ -41,61 +41,26 @@
     hdfs dfs -put /home/ec2-user/access.log /tmp/challenge/logs
 </p>
 <p>
-    <strong>#Crear tabla en hive del log</strong>
+    <strong>#Crear tabla en hive desde el archivo de log</strong>
 </p>
 <p>
     drop table if exists access_log2;
-</p>
-<p>
+
     CREATE EXTERNAL TABLE access_log2 (
-</p>
-<p>
     ip STRING,
-</p>
-<p>
     time_local STRING,
-</p>
-<p>
     method STRING,
-</p>
-<p>
     uri STRING,
-</p>
-<p>
     protocol STRING,
-</p>
-<p>
     status STRING,
-</p>
-<p>
     bytes_sent STRING,
-</p>
-<p>
     referer STRING,
-</p>
-<p>
-    useragent STRING
-</p>
-<p>
-    )
-</p>
-<p>
+    useragent STRING)
     ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.RegexSerDe'
-</p>
-<p>
     WITH SERDEPROPERTIES (
-</p>
-<p>
     'input.regex'='^(\\S+) \\S+ \\S+ \\[([^\\[]+)\\] "(\\w+) (\\S+) (\\S+)"
     (\\d+) (\\d+) "([^"]+)" "([^"]+)".*'
-</p>
-<p>
-    )
-</p>
-<p>
     STORED AS TEXTFILE
-</p>
-<p>
     LOCATION '/tmp/challenge/logs'
 </p>
 <p>
@@ -111,12 +76,8 @@
 <p>
     create table conversion as select a.product_id,
     cast((sum(a.product_cantity)/b.visual)*100 as string) as conversion_rate
-</p>
-<p>
     from product_transaction a inner join visualizaciones b on
     a.product_id=b.producto
-</p>
-<p>
     group by a.product_id, b.visual
 </p>
 <p>
