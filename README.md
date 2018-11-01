@@ -1,51 +1,128 @@
-# bootcamp_challenge
-
-#Permisos
-export HADOOP_USER_NAME=hdfs
-
-#Creacion del directorio
-hdfs dfs -mkdir /tmp/challenge
-
-#Listar las tablas
-sqoop list-tables -connect jdbc:mysql://34.205.65.241:3306/ecommerce_cloudera -username bootcamp -P 
-
-#Importación de los datos desde MySql
-sqoop import -connect jdbc:mysql://34.205.65.241/ecommerce_cloudera -table product_transaction  -username bootcamp -P -hive-import
-
-#Obtención del Log
-wget http://34.205.65.241/access.log
-
-#Ingesta en Hdfs
-hdfs dfs -put /home/ec2-user/access.log /tmp/challenge/logs
-
-#Crear tabla en hive del log
-drop table if exists access_log2;
-CREATE EXTERNAL TABLE access_log2 (
-        ip                STRING,
-        time_local        STRING,
-        method            STRING,
-        uri               STRING,
-        protocol          STRING,
-        status            STRING,
-        bytes_sent        STRING,
-        referer           STRING,
-        useragent         STRING
-        )
+<p>
+    <strong>#Permisos</strong>
+</p>
+<p>
+    export HADOOP_USER_NAME=hdfs
+</p>
+<p>
+    <strong>#Creacion del directorio</strong>
+</p>
+<p>
+    hdfs dfs -mkdir /tmp/challenge
+</p>
+<p>
+    <strong>#Listar las tablas</strong>
+</p>
+<p>
+    sqoop list-tables -connect
+    jdbc:mysql://34.205.65.241:3306/ecommerce_cloudera -username bootcamp -P
+</p>
+<p>
+    <strong>#Importaci</strong>
+    <strong>ó</strong>
+    <strong>n de los datos desde MySql</strong>
+</p>
+<p>
+    sqoop import -connect jdbc:mysql://34.205.65.241/ecommerce_cloudera -table
+    product_transaction -username bootcamp -P -hive-import
+</p>
+<p>
+    <strong>#Obtenci</strong>
+    <strong>ó</strong>
+    <strong>n del Log</strong>
+</p>
+<p>
+    wget http://34.205.65.241/access.log
+</p>
+<p>
+    <strong>#Ingesta en Hdfs</strong>
+</p>
+<p>
+    hdfs dfs -put /home/ec2-user/access.log /tmp/challenge/logs
+</p>
+<p>
+    <strong>#Crear tabla en hive del log</strong>
+</p>
+<p>
+    drop table if exists access_log2;
+</p>
+<p>
+    CREATE EXTERNAL TABLE access_log2 (
+</p>
+<p>
+    ip STRING,
+</p>
+<p>
+    time_local STRING,
+</p>
+<p>
+    method STRING,
+</p>
+<p>
+    uri STRING,
+</p>
+<p>
+    protocol STRING,
+</p>
+<p>
+    status STRING,
+</p>
+<p>
+    bytes_sent STRING,
+</p>
+<p>
+    referer STRING,
+</p>
+<p>
+    useragent STRING
+</p>
+<p>
+    )
+</p>
+<p>
     ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.RegexSerDe'
+</p>
+<p>
     WITH SERDEPROPERTIES (
-    'input.regex'='^(\\S+) \\S+ \\S+ \\[([^\\[]+)\\] "(\\w+) (\\S+) (\\S+)" (\\d+) (\\d+) "([^"]+)" "([^"]+)".*'
-)
-STORED AS TEXTFILE
-LOCATION '/tmp/challenge/logs'
-
-#Crear Tabla Agrupada de visualizaciones
-create table visualizaciones as select split(uri,'=')[1] as producto, count(*) as visual  from access_log2 group by split(uri,'=')[1]
-
-#Crear Tabla de Conversion
-create table conversion as select a.product_id, cast((sum(a.product_cantity)/b.visual)*100 as string) as conversion_rate
-from product_transaction a inner join visualizaciones b on a.product_id=b.producto
-group by a.product_id, b.visual
-
-#Exportar en Sqoop
-sqoop export --connect jdbc:mysql://34.205.65.241/ecommerce_cloudera -username bootcamp -P -table conversion_9 -hcatalog-table conversion
-
+</p>
+<p>
+    'input.regex'='^(\\S+) \\S+ \\S+ \\[([^\\[]+)\\] "(\\w+) (\\S+) (\\S+)"
+    (\\d+) (\\d+) "([^"]+)" "([^"]+)".*'
+</p>
+<p>
+    )
+</p>
+<p>
+    STORED AS TEXTFILE
+</p>
+<p>
+    LOCATION '/tmp/challenge/logs'
+</p>
+<p>
+    <strong>#Crear Tabla Agrupada de visualizaciones</strong>
+</p>
+<p>
+    create table visualizaciones as select split(uri,'=')[1] as producto,
+    count(*) as visual from access_log2 group by split(uri,'=')[1]
+</p>
+<p>
+    <strong>#Crear Tabla de Conversion</strong>
+</p>
+<p>
+    create table conversion as select a.product_id,
+    cast((sum(a.product_cantity)/b.visual)*100 as string) as conversion_rate
+</p>
+<p>
+    from product_transaction a inner join visualizaciones b on
+    a.product_id=b.producto
+</p>
+<p>
+    group by a.product_id, b.visual
+</p>
+<p>
+    <strong>#Exportar en Sqoop</strong>
+</p>
+<p>
+    sqoop export --connect jdbc:mysql://34.205.65.241/ecommerce_cloudera
+    -username bootcamp -P -table conversion_9 -hcatalog-table conversion
+</p>
