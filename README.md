@@ -45,7 +45,6 @@
 </p>
 <p>
     drop table if exists access_log2;
-
     CREATE EXTERNAL TABLE access_log2 (
     ip STRING,
     time_local STRING,
