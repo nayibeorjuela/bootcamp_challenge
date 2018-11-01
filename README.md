@@ -44,7 +44,9 @@
     <strong>#Crear tabla en hive desde el archivo de log</strong>
 </p>
 <p>
+    
     drop table if exists access_log2;
+    
     CREATE EXTERNAL TABLE access_log2 (
     ip STRING,
     time_local STRING,
