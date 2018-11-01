@@ -65,14 +65,14 @@
     LOCATION '/tmp/challenge/logs'
 </p>
 <p>
-    <strong>#Crear Tabla Agrupada de visualizaciones</strong>
+    <strong>#Crear Tabla Agrupada de visualizaciones en hive</strong>
 </p>
 <p>
     create table visualizaciones as select split(uri,'=')[1] as producto,
     count(*) as visual from access_log2 group by split(uri,'=')[1]
 </p>
 <p>
-    <strong>#Crear Tabla de Conversion</strong>
+    <strong>#Crear Tabla de Conversion en hive</strong>
 </p>
 <p>
     create table conversion as select a.product_id,
@@ -82,7 +82,7 @@
     group by a.product_id, b.visual
 </p>
 <p>
-    <strong>#Exportar en Sqoop</strong>
+    <strong>#Exportar en Sqoop desde hive a la tabla conversion_9 en Mysql</strong>
 </p>
 <p>
     sqoop export --connect jdbc:mysql://34.205.65.241/ecommerce_cloudera
